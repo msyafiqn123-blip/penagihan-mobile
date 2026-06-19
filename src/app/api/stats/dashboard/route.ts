@@ -17,7 +17,7 @@ export async function GET(request: Request) {
 
     if (user.role === 'KOLEKTOR') {
       const { nm_kelurahan, nm_kecamatan } = user;
-      if (!nm_kelurahan) return NextResponse.json({ error: 'Missing kelurahan' }, { status: 400 });
+      if (!nm_kelurahan || !nm_kecamatan) return NextResponse.json({ error: 'Missing location data' }, { status: 400 });
 
       // KOLEKTOR logic
       const records = await prisma.taxRecord.findMany({ where: { nm_kelurahan } });
@@ -84,6 +84,7 @@ export async function GET(request: Request) {
       });
     } else if (user.role === 'PENAGIHAN') {
       const { nm_kecamatan } = user;
+      if (!nm_kecamatan) return NextResponse.json({ error: 'Missing kecamatan' }, { status: 400 });
 
       // PENAGIHAN logic (Kecamatan level)
       const records = await prisma.taxRecord.findMany({ where: { nm_kecamatan } });
