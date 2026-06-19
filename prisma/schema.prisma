@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String  @id @default(cuid())
+  username     String  @unique
+  password     String
+  role         String  // "ADMIN" | "KELURAHAN"
+  nm_kelurahan String?
+  nm_kecamatan String?
+}
+
+model TaxRecord {
+  id                        String @id @default(cuid())
+  nm_kecamatan              String
+  nm_kelurahan              String
+  nop                       String
+  nm_wp                     String
+  alamat_op                 String
+  pbb_yg_harus_dibayar_sppt Float
+  status_pembayaran_sppt    String
+  blok                      String
+
+  @@index([nm_kelurahan, blok])
+  @@index([nm_kecamatan])
+}
+
+model SystemSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+}
