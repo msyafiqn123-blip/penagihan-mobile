@@ -19,11 +19,11 @@ export async function GET(request: Request) {
       SELECT 
         nm_kecamatan,
         nm_kelurahan,
-        COUNT(id) as totalNop,
-        SUM(CASE WHEN status_pembayaran_sppt = 'LUNAS' THEN 1 ELSE 0 END) as lunasNop,
-        SUM(pbb_yg_harus_dibayar_sppt) as totalTagihan,
-        SUM(CASE WHEN status_pembayaran_sppt != 'LUNAS' THEN pbb_yg_harus_dibayar_sppt ELSE 0 END) as totalBelumLunas
-      FROM TaxRecord
+        COUNT(id) as "totalNop",
+        SUM(CASE WHEN status_pembayaran_sppt = 'LUNAS' THEN 1 ELSE 0 END) as "lunasNop",
+        SUM(pbb_yg_harus_dibayar_sppt) as "totalTagihan",
+        SUM(CASE WHEN status_pembayaran_sppt != 'LUNAS' THEN pbb_yg_harus_dibayar_sppt ELSE 0 END) as "totalBelumLunas"
+      FROM "TaxRecord"
       GROUP BY nm_kecamatan, nm_kelurahan
     ` as any[];
 
