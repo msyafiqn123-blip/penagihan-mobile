@@ -230,6 +230,7 @@ export default function AccountsManagementPage() {
                 >
                   <option value="KOLEKTOR">Kolektor</option>
                   <option value="PENAGIHAN">Penagihan</option>
+                  <option value="PENAGIHAN_PERUSAHAAN">Penagihan Perusahaan (>2 Jt)</option>
                   <option value="ADMIN">Admin</option>
                 </select>
               </div>

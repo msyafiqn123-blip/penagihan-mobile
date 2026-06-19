@@ -23,6 +23,8 @@ export async function GET(request: Request) {
     } else if (user.role === 'PENAGIHAN') {
       if (!user.nm_kecamatan) return NextResponse.json({ error: 'Missing kecamatan data' }, { status: 400 });
       whereClause = { nm_kecamatan: user.nm_kecamatan };
+    } else if (user.role === 'PENAGIHAN_PERUSAHAAN') {
+      whereClause = { pbb_yg_harus_dibayar_sppt: { gt: 2000000 } };
     } else if (user.role === 'ADMIN') {
       // no filter, see all
     } else {

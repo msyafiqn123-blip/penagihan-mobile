@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const user = verifyToken(token);
-    if (!user || !user.nm_kecamatan) {
+    if (!user || (!user.nm_kecamatan && user.role !== 'PENAGIHAN_PERUSAHAAN')) {
       return NextResponse.json({ error: 'Unauthorized or missing data' }, { status: 401 });
     }
 
@@ -131,6 +131,41 @@ export async function GET(request: Request) {
           totalLevel2: totalInKabupaten, 
           labelLevel2: 'Kabupaten',
           allLevel2: kabRankings
+        }
+      });
+    } else if (user.role === 'PENAGIHAN_PERUSAHAAN') {
+      const records = await prisma.taxRecord.findMany({ where: { pbb_yg_harus_dibayar_sppt: { gt: 2000000 } } });
+      let totalLunas = 0, totalBelum = 0;
+      const kecMap: Record<string, { lunas: number, belum: number }> = {};
+
+      records.forEach(r => {
+        const isLunas = r.status_pembayaran_sppt === 'LUNAS';
+        if (isLunas) totalLunas++; else totalBelum++;
+        const k = r.nm_kecamatan;
+        if (!kecMap[k]) kecMap[k] = { lunas: 0, belum: 0 };
+        if (isLunas) kecMap[k].lunas++; else kecMap[k].belum++;
+      });
+
+      const total = totalLunas + totalBelum;
+      const percentage = total > 0 ? (totalLunas / total) * 100 : 0;
+      const kecamatanStats = Object.entries(kecMap).map(([name, stats]) => {
+        const t = stats.lunas + stats.belum;
+        return { name, lunas: stats.lunas, belumLunas: stats.belum, total: t, percentageLunas: t > 0 ? (stats.lunas / t) * 100 : 0 };
+      }).sort((a, b) => a.name.localeCompare(b.name));
+
+      return NextResponse.json({
+        type: 'PENAGIHAN_PERUSAHAAN',
+        userKecamatan: 'Semua Kecamatan (Perusahaan > 2 Juta)',
+        summary: { total, totalLunas, totalBelum, percentage },
+        stats: kecamatanStats,
+        ranking: { 
+          rankLevel1: null, 
+          totalLevel1: null, 
+          labelLevel1: null, 
+          rankLevel2: null, 
+          totalLevel2: null, 
+          labelLevel2: null,
+          allLevel2: []
         }
       });
     }

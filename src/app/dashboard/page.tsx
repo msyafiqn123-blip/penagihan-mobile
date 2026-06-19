@@ -58,7 +58,7 @@ export default function DashboardPage() {
 
   const labelLevel1 = ranking.labelLevel1 || 'Kecamatan';
   const labelLevel2 = ranking.labelLevel2 || 'Kabupaten';
-  const labelStats = type === 'KOLEKTOR' ? 'Blok' : 'Kelurahan';
+  const labelStats = type === 'KOLEKTOR' ? 'Blok' : type === 'PENAGIHAN_PERUSAHAAN' ? 'Kecamatan' : 'Kelurahan';
 
   let kabRankSlice: any[] = [];
   if (ranking?.allLevel2 && ranking?.rankLevel2) {

@@ -34,7 +34,7 @@ export default function DashboardLayout({
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    ...(user.role === 'KOLEKTOR' || user.role === 'PENAGIHAN' ? [{ name: 'Data Piutang 2026', path: '/dashboard/detail-nop', icon: FileText }] : []),
+    ...(user.role === 'KOLEKTOR' || user.role === 'PENAGIHAN' || user.role === 'PENAGIHAN_PERUSAHAAN' ? [{ name: 'Data Piutang 2026', path: '/dashboard/detail-nop', icon: FileText }] : []),
     ...(user.role === 'PENAGIHAN' ? [{ name: 'Capaian', path: '/dashboard/capaian', icon: LayoutDashboard }] : []),
     { name: 'Update Password', path: '/dashboard/update-password', icon: KeyRound },
   ];
