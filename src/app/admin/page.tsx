@@ -103,7 +103,7 @@ export default function AdminDashboard() {
 
       {/* Overview Stats */}
       <div className="bg-card p-5 rounded-2xl shadow-xl">
-        <h3 className="mb-4 text-slate-700"><Target size={20} className="mr-2 text-blue-600"/> Pencapaian Total</h3>
+        <h3 className="mb-4 text-slate-700"><Target size={20} className="mr-2 text-blue-600 inline"/> Pencapaian Berdasarkan SPPT</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 bg-black-20">
             <p className="text-xs text-slate-500">Total NOP</p>
@@ -125,7 +125,7 @@ export default function AdminDashboard() {
       </div>
 
       <div className="bg-card p-5 rounded-2xl shadow-xl">
-        <h3 className="mb-4 text-slate-700"><DollarSign size={20} className="mr-2 text-indigo-600 inline"/> Pencapaian Nominal (Ketetapan)</h3>
+        <h3 className="mb-4 text-slate-700"><DollarSign size={20} className="mr-2 text-indigo-600 inline"/> Pencapaian Berdasarkan Ketetapan PBB</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
             <p className="text-xs text-slate-500">Total Nominal PBB</p>

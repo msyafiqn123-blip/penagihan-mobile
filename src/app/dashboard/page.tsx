@@ -190,7 +190,7 @@ export default function DashboardPage() {
 
       {/* Overview Stats */}
       <div className="bg-card p-6 rounded-2xl shadow-sm border border-slate-100">
-        <h3 className="mb-4 text-slate-800"><Target size={20} className="mr-2 text-blue-600"/> Ringkasan Keseluruhan</h3>
+        <h3 className="mb-4 text-slate-800"><Target size={20} className="mr-2 text-blue-600 inline"/> Pencapaian Berdasarkan SPPT</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 bg-slate-50 rounded-xl">
             <p className="text-xs text-slate-500 font-semibold mb-1">Total NOP</p>
@@ -219,7 +219,7 @@ export default function DashboardPage() {
 
       {/* Nominal Stats */}
       <div className="bg-card p-6 rounded-2xl shadow-sm border border-slate-100 mt-6">
-        <h3 className="mb-4 text-slate-800"><DollarSign size={20} className="mr-2 text-indigo-600 inline"/> Pencapaian Nominal (Ketetapan)</h3>
+        <h3 className="mb-4 text-slate-800"><DollarSign size={20} className="mr-2 text-indigo-600 inline"/> Pencapaian Berdasarkan Ketetapan PBB</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
             <p className="text-xs text-slate-500 font-semibold mb-1">Total Nominal DHKP</p>
