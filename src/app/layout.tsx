@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Penagihan Mobile",
-  description: "Aplikasi monitoring PBB",
+  title: "Monitoring DHKP PBB",
+  description: "Aplikasi Monitoring DHKP PBB",
 };
 
 export const viewport: Viewport = {

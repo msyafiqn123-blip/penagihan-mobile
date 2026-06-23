@@ -36,8 +36,8 @@ export default function LoginPage() {
         
         <div className="text-center mb-10">
           <h1 className="text-3xl font-black tracking-tight mb-2">
-            <span style={{ color: '#005c8a' }}>Penagihan</span>{' '}
-            <span style={{ color: '#f97316' }}>Mobile</span>
+            <span style={{ color: '#005c8a' }}>Monitoring DHKP</span>{' '}
+            <span style={{ color: '#f97316' }}>PBB</span>
           </h1>
           <p className="text-sm font-medium" style={{ color: '#475569' }}>Silakan masuk ke akun Anda</p>
         </div>

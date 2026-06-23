@@ -43,7 +43,7 @@ export default function DashboardLayout({
     <>
       <div className="flex items-center justify-between p-6">
         <h1 className="text-xl font-bold tracking-tight mb-0 flex items-center" style={{marginBottom:0}}>
-          <span className="text-blue-600">Penagihan</span> <span className="text-orange-500 ml-1">Mobile</span>
+          <span className="text-blue-600">Monitoring DHKP</span> <span className="text-orange-500 ml-1">PBB</span>
         </h1>
         {isMobile ? (
           <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition md:hidden">
@@ -117,7 +117,7 @@ export default function DashboardLayout({
         {/* Mobile Top Header */}
         <header className="md:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 flex-shrink-0 z-10">
           <h1 className="text-lg font-bold tracking-tight mb-0 flex items-center" style={{marginBottom: 0}}>
-            <span className="text-blue-600">Penagihan</span> <span className="text-orange-500 ml-1">Mobile</span>
+            <span className="text-blue-600">Monitoring DHKP</span> <span className="text-orange-500 ml-1">PBB</span>
           </h1>
           <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
             <Menu size={24} />
