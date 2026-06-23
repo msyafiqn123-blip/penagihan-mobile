@@ -4,6 +4,15 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Target, CheckCircle, XCircle } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from 'recharts';
+import { DollarSign, Percent, TrendingUp } from 'lucide-react';
+
+const formatRupiah = (number: number) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(number);
+};
 
 export default function AdminDashboard() {
   const [data, setData] = useState<any>(null);
@@ -115,6 +124,28 @@ export default function AdminDashboard() {
         </div>
       </div>
 
+      <div className="bg-card p-5 rounded-2xl shadow-xl">
+        <h3 className="mb-4 text-slate-700"><DollarSign size={20} className="mr-2 text-indigo-600 inline"/> Pencapaian Nominal (Ketetapan)</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
+            <p className="text-xs text-slate-500">Total Nominal PBB</p>
+            <p className="text-xl font-bold text-slate-800">{formatRupiah(overall.totalNominal)}</p>
+          </div>
+          <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
+            <p className="text-xs text-indigo-600 flex items-center"><TrendingUp size={12} className="mr-1"/> Pencapaian (%)</p>
+            <p className="text-xl font-bold text-indigo-700">{(overall.totalNominal > 0 ? (overall.totalNominalLunas / overall.totalNominal) * 100 : 0).toFixed(2)}%</p>
+          </div>
+          <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
+            <p className="text-xs text-emerald-600 flex items-center"><CheckCircle size={12} className="mr-1"/> Nominal Lunas</p>
+            <p className="text-xl font-bold text-emerald-700">{formatRupiah(overall.totalNominalLunas)}</p>
+          </div>
+          <div className="p-4 bg-rose-50 border border-rose-100 rounded-xl">
+            <p className="text-xs text-rose-600 flex items-center"><XCircle size={12} className="mr-1"/> Nominal Belum</p>
+            <p className="text-xl font-bold text-rose-700">{formatRupiah(overall.totalNominalBelum)}</p>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-card p-5 rounded-2xl shadow-xl md:col-span-1">
           <h3 className="mb-4 text-center justify-center text-slate-700">Proporsi Keseluruhan</h3>
@@ -161,6 +192,42 @@ export default function AdminDashboard() {
               <Bar dataKey="Lunas" stackId="a" fill="#10b981" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Rincian Nominal per Kecamatan Table */}
+      <div className="bg-card p-5 rounded-2xl shadow-xl overflow-hidden">
+        <h3 className="mb-4 text-slate-700 font-bold">Rincian Nominal per Kecamatan</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th className="px-4 py-3 font-semibold">Kecamatan</th>
+                <th className="px-4 py-3 font-semibold text-right">Ketetapan (Total PBB)</th>
+                <th className="px-4 py-3 font-semibold text-right">Sudah Lunas</th>
+                <th className="px-4 py-3 font-semibold text-right">Belum Lunas</th>
+                <th className="px-4 py-3 font-semibold text-center">Pencapaian (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {kecamatanStats.map((k: any, idx: number) => {
+                const percent = k.nominalTotal > 0 ? (k.nominalLunas / k.nominalTotal) * 100 : 0;
+                return (
+                  <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-slate-700">{k.name}</td>
+                    <td className="px-4 py-3 text-right text-slate-600">{formatRupiah(k.nominalTotal)}</td>
+                    <td className="px-4 py-3 text-right text-emerald-600 font-medium">{formatRupiah(k.nominalLunas)}</td>
+                    <td className="px-4 py-3 text-right text-rose-600 font-medium">{formatRupiah(k.nominalBelum)}</td>
+                    <td className="px-4 py-3 text-center">
+                      <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${percent >= 70 ? 'bg-emerald-100 text-emerald-700' : percent >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}`}>
+                        {percent.toFixed(2)}%
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
 
