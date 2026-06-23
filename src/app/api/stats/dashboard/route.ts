@@ -22,18 +22,28 @@ export async function GET(request: Request) {
       // KOLEKTOR logic
       const records = await prisma.taxRecord.findMany({ where: { nm_kelurahan } });
       let totalLunas = 0, totalBelum = 0;
+      let totalNominalLunas = 0, totalNominalBelum = 0;
       const blockMap: Record<string, { lunas: number, belum: number }> = {};
 
       records.forEach(r => {
         const isLunas = r.status_pembayaran_sppt === 'LUNAS';
-        if (isLunas) totalLunas++; else totalBelum++;
+        const nominal = r.pbb_yg_harus_dibayar_sppt || 0;
+        if (isLunas) {
+          totalLunas++;
+          totalNominalLunas += nominal;
+        } else {
+          totalBelum++;
+          totalNominalBelum += nominal;
+        }
         const b = r.blok;
         if (!blockMap[b]) blockMap[b] = { lunas: 0, belum: 0 };
         if (isLunas) blockMap[b].lunas++; else blockMap[b].belum++;
       });
 
       const total = totalLunas + totalBelum;
+      const totalNominal = totalNominalLunas + totalNominalBelum;
       const percentage = total > 0 ? (totalLunas / total) * 100 : 0;
+      const percentageNominal = totalNominal > 0 ? (totalNominalLunas / totalNominal) * 100 : 0;
       const blockStats = Object.entries(blockMap).map(([name, stats]) => {
         const t = stats.lunas + stats.belum;
         return { name, lunas: stats.lunas, belumLunas: stats.belum, total: t, percentageLunas: t > 0 ? (stats.lunas / t) * 100 : 0 };
@@ -69,7 +79,7 @@ export async function GET(request: Request) {
         type: 'KOLEKTOR',
         userKelurahan: nm_kelurahan,
         userKecamatan: nm_kecamatan,
-        summary: { total, totalLunas, totalBelum, percentage },
+        summary: { total, totalLunas, totalBelum, percentage, totalNominal, totalNominalLunas, totalNominalBelum, percentageNominal },
         stats: blockStats, // Renamed to stats for consistency in UI
         ranking: { 
           rankLevel1: rankInKecamatan, 
@@ -89,18 +99,28 @@ export async function GET(request: Request) {
       // PENAGIHAN logic (Kecamatan level)
       const records = await prisma.taxRecord.findMany({ where: { nm_kecamatan } });
       let totalLunas = 0, totalBelum = 0;
+      let totalNominalLunas = 0, totalNominalBelum = 0;
       const kelMap: Record<string, { lunas: number, belum: number }> = {};
 
       records.forEach(r => {
         const isLunas = r.status_pembayaran_sppt === 'LUNAS';
-        if (isLunas) totalLunas++; else totalBelum++;
+        const nominal = r.pbb_yg_harus_dibayar_sppt || 0;
+        if (isLunas) {
+          totalLunas++;
+          totalNominalLunas += nominal;
+        } else {
+          totalBelum++;
+          totalNominalBelum += nominal;
+        }
         const k = r.nm_kelurahan;
         if (!kelMap[k]) kelMap[k] = { lunas: 0, belum: 0 };
         if (isLunas) kelMap[k].lunas++; else kelMap[k].belum++;
       });
 
       const total = totalLunas + totalBelum;
+      const totalNominal = totalNominalLunas + totalNominalBelum;
       const percentage = total > 0 ? (totalLunas / total) * 100 : 0;
+      const percentageNominal = totalNominal > 0 ? (totalNominalLunas / totalNominal) * 100 : 0;
       const kelurahanStats = Object.entries(kelMap).map(([name, stats]) => {
         const t = stats.lunas + stats.belum;
         return { name, lunas: stats.lunas, belumLunas: stats.belum, total: t, percentageLunas: t > 0 ? (stats.lunas / t) * 100 : 0 };
@@ -122,7 +142,7 @@ export async function GET(request: Request) {
       return NextResponse.json({
         type: 'PENAGIHAN',
         userKecamatan: nm_kecamatan,
-        summary: { total, totalLunas, totalBelum, percentage },
+        summary: { total, totalLunas, totalBelum, percentage, totalNominal, totalNominalLunas, totalNominalBelum, percentageNominal },
         stats: kelurahanStats,
         ranking: { 
           rankLevel1: null, 
@@ -137,18 +157,28 @@ export async function GET(request: Request) {
     } else if (user.role === 'PENAGIHAN_PERUSAHAAN') {
       const records = await prisma.taxRecord.findMany({ where: { pbb_yg_harus_dibayar_sppt: { gt: 2000000 } } });
       let totalLunas = 0, totalBelum = 0;
+      let totalNominalLunas = 0, totalNominalBelum = 0;
       const kecMap: Record<string, { lunas: number, belum: number }> = {};
 
       records.forEach(r => {
         const isLunas = r.status_pembayaran_sppt === 'LUNAS';
-        if (isLunas) totalLunas++; else totalBelum++;
+        const nominal = r.pbb_yg_harus_dibayar_sppt || 0;
+        if (isLunas) {
+          totalLunas++;
+          totalNominalLunas += nominal;
+        } else {
+          totalBelum++;
+          totalNominalBelum += nominal;
+        }
         const k = r.nm_kecamatan;
         if (!kecMap[k]) kecMap[k] = { lunas: 0, belum: 0 };
         if (isLunas) kecMap[k].lunas++; else kecMap[k].belum++;
       });
 
       const total = totalLunas + totalBelum;
+      const totalNominal = totalNominalLunas + totalNominalBelum;
       const percentage = total > 0 ? (totalLunas / total) * 100 : 0;
+      const percentageNominal = totalNominal > 0 ? (totalNominalLunas / totalNominal) * 100 : 0;
       const kecamatanStats = Object.entries(kecMap).map(([name, stats]) => {
         const t = stats.lunas + stats.belum;
         return { name, lunas: stats.lunas, belumLunas: stats.belum, total: t, percentageLunas: t > 0 ? (stats.lunas / t) * 100 : 0 };
@@ -157,7 +187,7 @@ export async function GET(request: Request) {
       return NextResponse.json({
         type: 'PENAGIHAN_PERUSAHAAN',
         userKecamatan: 'Semua Kecamatan (Perusahaan > 2 Juta)',
-        summary: { total, totalLunas, totalBelum, percentage },
+        summary: { total, totalLunas, totalBelum, percentage, totalNominal, totalNominalLunas, totalNominalBelum, percentageNominal },
         stats: kecamatanStats,
         ranking: { 
           rankLevel1: null, 
