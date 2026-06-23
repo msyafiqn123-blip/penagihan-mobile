@@ -220,22 +220,22 @@ export default function DashboardPage() {
       {/* Nominal Stats */}
       <div className="bg-card p-6 rounded-2xl shadow-sm border border-slate-100 mt-6">
         <h3 className="mb-4 text-slate-800"><DollarSign size={20} className="mr-2 text-indigo-600 inline"/> Pencapaian Berdasarkan Ketetapan PBB</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
             <p className="text-xs text-slate-500 font-semibold mb-1">Total Nominal DHKP</p>
-            <p className="text-xl font-bold text-slate-800">{formatRupiah(summary.totalNominal)}</p>
+            <p className="text-lg md:text-xl font-bold text-slate-800 break-words">{formatRupiah(summary.totalNominal)}</p>
           </div>
           <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
             <p className="text-xs text-indigo-600 font-semibold flex items-center mb-1"><TrendingUp size={12} className="mr-1"/> Pencapaian DHKP (%)</p>
-            <p className="text-xl font-bold text-indigo-700">{summary.percentageNominal.toFixed(2)}%</p>
+            <p className="text-lg md:text-xl font-bold text-indigo-700 break-words">{summary.percentageNominal.toFixed(2)}%</p>
           </div>
           <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
             <p className="text-xs text-emerald-600 font-semibold flex items-center mb-1"><CheckCircle size={12} className="mr-1"/> Nominal Lunas</p>
-            <p className="text-xl font-bold text-emerald-700">{formatRupiah(summary.totalNominalLunas)}</p>
+            <p className="text-lg md:text-xl font-bold text-emerald-700 break-words">{formatRupiah(summary.totalNominalLunas)}</p>
           </div>
           <div className="p-4 bg-rose-50 border border-rose-100 rounded-xl">
             <p className="text-xs text-rose-600 font-semibold flex items-center mb-1"><XCircle size={12} className="mr-1"/> Nominal Belum</p>
-            <p className="text-xl font-bold text-rose-700">{formatRupiah(summary.totalNominalBelum)}</p>
+            <p className="text-lg md:text-xl font-bold text-rose-700 break-words">{formatRupiah(summary.totalNominalBelum)}</p>
           </div>
         </div>
       </div>

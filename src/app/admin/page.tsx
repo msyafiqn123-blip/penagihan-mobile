@@ -124,24 +124,24 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="bg-card p-5 rounded-2xl shadow-xl">
+      <div className="bg-card p-5 rounded-2xl shadow-xl mt-6">
         <h3 className="mb-4 text-slate-700"><DollarSign size={20} className="mr-2 text-indigo-600 inline"/> Pencapaian Berdasarkan Ketetapan PBB</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
             <p className="text-xs text-slate-500">Total Nominal PBB</p>
-            <p className="text-xl font-bold text-slate-800">{formatRupiah(overall.totalNominal)}</p>
+            <p className="text-lg md:text-xl font-bold text-slate-800 break-words">{formatRupiah(overall.totalNominal)}</p>
           </div>
           <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
             <p className="text-xs text-indigo-600 flex items-center"><TrendingUp size={12} className="mr-1"/> Pencapaian (%)</p>
-            <p className="text-xl font-bold text-indigo-700">{(overall.totalNominal > 0 ? (overall.totalNominalLunas / overall.totalNominal) * 100 : 0).toFixed(2)}%</p>
+            <p className="text-lg md:text-xl font-bold text-indigo-700 break-words">{(overall.totalNominal > 0 ? (overall.totalNominalLunas / overall.totalNominal) * 100 : 0).toFixed(2)}%</p>
           </div>
           <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-xl">
             <p className="text-xs text-emerald-600 flex items-center"><CheckCircle size={12} className="mr-1"/> Nominal Lunas</p>
-            <p className="text-xl font-bold text-emerald-700">{formatRupiah(overall.totalNominalLunas)}</p>
+            <p className="text-lg md:text-xl font-bold text-emerald-700 break-words">{formatRupiah(overall.totalNominalLunas)}</p>
           </div>
           <div className="p-4 bg-rose-50 border border-rose-100 rounded-xl">
             <p className="text-xs text-rose-600 flex items-center"><XCircle size={12} className="mr-1"/> Nominal Belum</p>
-            <p className="text-xl font-bold text-rose-700">{formatRupiah(overall.totalNominalBelum)}</p>
+            <p className="text-lg md:text-xl font-bold text-rose-700 break-words">{formatRupiah(overall.totalNominalBelum)}</p>
           </div>
         </div>
       </div>
