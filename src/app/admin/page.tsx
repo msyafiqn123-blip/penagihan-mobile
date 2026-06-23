@@ -196,12 +196,13 @@ export default function AdminDashboard() {
       </div>
 
       {/* Rincian Nominal per Kecamatan Table */}
-      <div className="bg-card p-5 rounded-2xl shadow-xl overflow-hidden">
+      <div className="bg-card p-5 rounded-2xl shadow-xl overflow-hidden mt-6">
         <h3 className="mb-4 text-slate-700 font-bold">Rincian Nominal per Kecamatan</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
               <tr>
+                <th className="px-4 py-3 font-semibold w-12 text-center">No</th>
                 <th className="px-4 py-3 font-semibold">Kecamatan</th>
                 <th className="px-4 py-3 font-semibold text-right">Ketetapan (Total PBB)</th>
                 <th className="px-4 py-3 font-semibold text-right">Sudah Lunas</th>
@@ -210,10 +211,15 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {kecamatanStats.map((k: any, idx: number) => {
+              {[...kecamatanStats].sort((a: any, b: any) => {
+                const percentA = a.nominalTotal > 0 ? (a.nominalLunas / a.nominalTotal) * 100 : 0;
+                const percentB = b.nominalTotal > 0 ? (b.nominalLunas / b.nominalTotal) * 100 : 0;
+                return percentB - percentA;
+              }).map((k: any, idx: number) => {
                 const percent = k.nominalTotal > 0 ? (k.nominalLunas / k.nominalTotal) * 100 : 0;
                 return (
                   <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="px-4 py-3 text-center text-slate-500 font-medium">{idx + 1}</td>
                     <td className="px-4 py-3 font-medium text-slate-700">{k.name}</td>
                     <td className="px-4 py-3 text-right text-slate-600">{formatRupiah(k.nominalTotal)}</td>
                     <td className="px-4 py-3 text-right text-emerald-600 font-medium">{formatRupiah(k.nominalLunas)}</td>
