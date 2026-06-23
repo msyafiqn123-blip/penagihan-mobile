@@ -110,10 +110,25 @@ export async function GET(request: Request) {
       nominalTotal: stats.nominalTotal
     })).sort((a, b) => b.percentageLunas - a.percentageLunas);
 
+    // Top 10 unpaid NOPs
+    const topUnpaid = await prisma.taxRecord.findMany({
+      where: { status_pembayaran_sppt: 'BELUM LUNAS' },
+      orderBy: { pbb_yg_harus_dibayar_sppt: 'desc' },
+      take: 10,
+      select: {
+        nop: true,
+        nm_wp: true,
+        nm_kecamatan: true,
+        nm_kelurahan: true,
+        pbb_yg_harus_dibayar_sppt: true
+      }
+    });
+
     return NextResponse.json({
       overall: { totalCount, totalLunas, totalBelum, totalNominal, totalNominalLunas, totalNominalBelum },
       kecamatanStats,
-      kelurahanStats
+      kelurahanStats,
+      topUnpaid
     });
 
   } catch (error) {

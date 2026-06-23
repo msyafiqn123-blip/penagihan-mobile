@@ -69,7 +69,7 @@ export default function AdminDashboard() {
 
   if (!data) return null;
 
-  const { overall, kecamatanStats, kelurahanStats } = data;
+  const { overall, kecamatanStats, kelurahanStats, topUnpaid } = data;
   const pieData = [
     { name: 'Lunas', value: overall.totalLunas, color: '#10b981' },
     { name: 'Belum Lunas', value: overall.totalBelum, color: '#ef4444' }
@@ -226,6 +226,37 @@ export default function AdminDashboard() {
                   </tr>
                 );
               })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Top 10 Belum Lunas Tertinggi */}
+      <div className="bg-card p-5 rounded-2xl shadow-xl overflow-hidden mt-6">
+        <h3 className="mb-4 text-slate-700 font-bold">10 NOP dengan Tagihan Belum Lunas Tertinggi</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th className="px-4 py-3 font-semibold w-12 text-center">No</th>
+                <th className="px-4 py-3 font-semibold">NOP</th>
+                <th className="px-4 py-3 font-semibold">Nama WP</th>
+                <th className="px-4 py-3 font-semibold">Kecamatan</th>
+                <th className="px-4 py-3 font-semibold">Kelurahan</th>
+                <th className="px-4 py-3 font-semibold text-right">Tagihan</th>
+              </tr>
+            </thead>
+            <tbody>
+              {topUnpaid && topUnpaid.map((nopItem: any, idx: number) => (
+                <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                  <td className="px-4 py-3 text-center text-slate-500">{idx + 1}</td>
+                  <td className="px-4 py-3 font-medium text-slate-700">{nopItem.nop}</td>
+                  <td className="px-4 py-3 text-slate-600">{nopItem.nm_wp}</td>
+                  <td className="px-4 py-3 text-slate-600">{nopItem.nm_kecamatan}</td>
+                  <td className="px-4 py-3 text-slate-600">{nopItem.nm_kelurahan}</td>
+                  <td className="px-4 py-3 text-right text-rose-600 font-bold">{formatRupiah(nopItem.pbb_yg_harus_dibayar_sppt)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
