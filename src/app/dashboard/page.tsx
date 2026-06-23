@@ -245,7 +245,7 @@ export default function DashboardPage() {
         <div className="bg-card p-6 rounded-2xl shadow-sm border border-slate-100 mt-6">
           <h3 className="mb-4 text-slate-800 font-bold">Ulasan Lunas per Buku</h3>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
+            <table className="w-full text-sm text-left whitespace-nowrap">
               <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
                 <tr>
                   <th className="px-4 py-3 font-semibold">Buku (Range Nominal)</th>

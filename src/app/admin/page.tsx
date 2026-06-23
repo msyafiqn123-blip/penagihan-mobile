@@ -199,7 +199,7 @@ export default function AdminDashboard() {
       <div className="bg-card p-5 rounded-2xl shadow-xl overflow-hidden mt-6">
         <h3 className="mb-4 text-slate-700 font-bold">Rincian Nominal per Kecamatan</h3>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
+          <table className="w-full text-sm text-left whitespace-nowrap">
             <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
               <tr>
                 <th className="px-4 py-3 font-semibold w-12 text-center">No</th>
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
       <div className="bg-card p-5 rounded-2xl shadow-xl overflow-hidden mt-6">
         <h3 className="mb-4 text-slate-700 font-bold">Ulasan Lunas per Buku</h3>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
+          <table className="w-full text-sm text-left whitespace-nowrap">
             <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
               <tr>
                 <th className="px-4 py-3 font-semibold">Buku (Range Nominal)</th>
@@ -279,7 +279,7 @@ export default function AdminDashboard() {
       <div className="bg-card p-5 rounded-2xl shadow-xl overflow-hidden mt-6">
         <h3 className="mb-4 text-slate-700 font-bold">10 NOP dengan Tagihan Belum Lunas Tertinggi</h3>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
+          <table className="w-full text-sm text-left whitespace-nowrap">
             <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
               <tr>
                 <th className="px-4 py-3 font-semibold w-12 text-center">No</th>
