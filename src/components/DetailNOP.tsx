@@ -246,7 +246,7 @@ function DetailNOPContent() {
                     </td>
                     <td className="px-4 py-3 font-medium text-slate-800">{r.nop}</td>
                     <td className="px-4 py-3">
-                      <div className="font-semibold text-slate-700">{maskName(r.nm_wp)}</div>
+                      <div className="font-semibold text-slate-700">{r.nm_wp}</div>
                       <div className="text-xs text-slate-500 flex items-center mt-1">
                         <MapPin size={12} className="mr-1" /> {r.alamat_op}
                       </div>
@@ -308,7 +308,7 @@ function DetailNOPContent() {
                     </span>
                     <div>
                       <div className="text-xs font-semibold text-slate-500 mb-1">{r.nop}</div>
-                      <div className="font-bold text-slate-800 leading-tight">{maskName(r.nm_wp)}</div>
+                      <div className="font-bold text-slate-800 leading-tight">{r.nm_wp}</div>
                     </div>
                   </div>
                 </div>

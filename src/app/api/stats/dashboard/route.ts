@@ -15,6 +15,21 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Unauthorized or missing data' }, { status: 401 });
     }
 
+    const initBukuMap = () => ({
+      'Buku 1 (< 100 Ribu)': { name: 'Buku 1 (< 100 Ribu)', spptLunas: 0, spptBelum: 0, spptTotal: 0, nominalLunas: 0, nominalBelum: 0, nominalTotal: 0 },
+      'Buku 2 (100 Ribu - 500 Ribu)': { name: 'Buku 2 (100 Ribu - 500 Ribu)', spptLunas: 0, spptBelum: 0, spptTotal: 0, nominalLunas: 0, nominalBelum: 0, nominalTotal: 0 },
+      'Buku 3 (500 Ribu - 2 Juta)': { name: 'Buku 3 (500 Ribu - 2 Juta)', spptLunas: 0, spptBelum: 0, spptTotal: 0, nominalLunas: 0, nominalBelum: 0, nominalTotal: 0 },
+      'Buku 4 (2 Juta - 5 Juta)': { name: 'Buku 4 (2 Juta - 5 Juta)', spptLunas: 0, spptBelum: 0, spptTotal: 0, nominalLunas: 0, nominalBelum: 0, nominalTotal: 0 },
+      'Buku 5 (> 5 Juta)': { name: 'Buku 5 (> 5 Juta)', spptLunas: 0, spptBelum: 0, spptTotal: 0, nominalLunas: 0, nominalBelum: 0, nominalTotal: 0 }
+    });
+    const getBukuName = (nom: number) => {
+      if (nom <= 100000) return 'Buku 1 (< 100 Ribu)';
+      if (nom <= 500000) return 'Buku 2 (100 Ribu - 500 Ribu)';
+      if (nom <= 2000000) return 'Buku 3 (500 Ribu - 2 Juta)';
+      if (nom <= 5000000) return 'Buku 4 (2 Juta - 5 Juta)';
+      return 'Buku 5 (> 5 Juta)';
+    };
+
     if (user.role === 'KOLEKTOR') {
       const { nm_kelurahan, nm_kecamatan } = user;
       if (!nm_kelurahan || !nm_kecamatan) return NextResponse.json({ error: 'Missing location data' }, { status: 400 });
@@ -24,16 +39,25 @@ export async function GET(request: Request) {
       let totalLunas = 0, totalBelum = 0;
       let totalNominalLunas = 0, totalNominalBelum = 0;
       const blockMap: Record<string, { lunas: number, belum: number }> = {};
+      const bukuMap = initBukuMap();
 
       records.forEach(r => {
         const isLunas = r.status_pembayaran_sppt === 'LUNAS';
         const nominal = r.pbb_yg_harus_dibayar_sppt || 0;
+        const bName = getBukuName(nominal);
+        bukuMap[bName].spptTotal++;
+        bukuMap[bName].nominalTotal += nominal;
+
         if (isLunas) {
           totalLunas++;
           totalNominalLunas += nominal;
+          bukuMap[bName].spptLunas++;
+          bukuMap[bName].nominalLunas += nominal;
         } else {
           totalBelum++;
           totalNominalBelum += nominal;
+          bukuMap[bName].spptBelum++;
+          bukuMap[bName].nominalBelum += nominal;
         }
         const b = r.blok;
         if (!blockMap[b]) blockMap[b] = { lunas: 0, belum: 0 };
@@ -48,6 +72,7 @@ export async function GET(request: Request) {
         const t = stats.lunas + stats.belum;
         return { name, lunas: stats.lunas, belumLunas: stats.belum, total: t, percentageLunas: t > 0 ? (stats.lunas / t) * 100 : 0 };
       }).sort((a, b) => a.name.localeCompare(b.name));
+      const bukuStats = Object.values(bukuMap);
 
       // Rank in Kecamatan
       const kecRecords = await prisma.taxRecord.findMany({ where: { nm_kecamatan } });
@@ -81,6 +106,7 @@ export async function GET(request: Request) {
         userKecamatan: nm_kecamatan,
         summary: { total, totalLunas, totalBelum, percentage, totalNominal, totalNominalLunas, totalNominalBelum, percentageNominal },
         stats: blockStats, // Renamed to stats for consistency in UI
+        bukuStats,
         ranking: { 
           rankLevel1: rankInKecamatan, 
           totalLevel1: totalInKecamatan, 
@@ -101,16 +127,25 @@ export async function GET(request: Request) {
       let totalLunas = 0, totalBelum = 0;
       let totalNominalLunas = 0, totalNominalBelum = 0;
       const kelMap: Record<string, { lunas: number, belum: number }> = {};
+      const bukuMap = initBukuMap();
 
       records.forEach(r => {
         const isLunas = r.status_pembayaran_sppt === 'LUNAS';
         const nominal = r.pbb_yg_harus_dibayar_sppt || 0;
+        const bName = getBukuName(nominal);
+        bukuMap[bName].spptTotal++;
+        bukuMap[bName].nominalTotal += nominal;
+
         if (isLunas) {
           totalLunas++;
           totalNominalLunas += nominal;
+          bukuMap[bName].spptLunas++;
+          bukuMap[bName].nominalLunas += nominal;
         } else {
           totalBelum++;
           totalNominalBelum += nominal;
+          bukuMap[bName].spptBelum++;
+          bukuMap[bName].nominalBelum += nominal;
         }
         const k = r.nm_kelurahan;
         if (!kelMap[k]) kelMap[k] = { lunas: 0, belum: 0 };
@@ -125,6 +160,7 @@ export async function GET(request: Request) {
         const t = stats.lunas + stats.belum;
         return { name, lunas: stats.lunas, belumLunas: stats.belum, total: t, percentageLunas: t > 0 ? (stats.lunas / t) * 100 : 0 };
       }).sort((a, b) => a.name.localeCompare(b.name)); // Alphabetical
+      const bukuStats = Object.values(bukuMap);
 
       // Rank in Kabupaten
       const kabStatsRaw = await prisma.taxRecord.groupBy({ by: ['nm_kecamatan', 'status_pembayaran_sppt'], _count: { _all: true } });
@@ -144,6 +180,7 @@ export async function GET(request: Request) {
         userKecamatan: nm_kecamatan,
         summary: { total, totalLunas, totalBelum, percentage, totalNominal, totalNominalLunas, totalNominalBelum, percentageNominal },
         stats: kelurahanStats,
+        bukuStats,
         ranking: { 
           rankLevel1: null, 
           totalLevel1: null, 
@@ -159,16 +196,25 @@ export async function GET(request: Request) {
       let totalLunas = 0, totalBelum = 0;
       let totalNominalLunas = 0, totalNominalBelum = 0;
       const kecMap: Record<string, { lunas: number, belum: number }> = {};
+      const bukuMap = initBukuMap();
 
       records.forEach(r => {
         const isLunas = r.status_pembayaran_sppt === 'LUNAS';
         const nominal = r.pbb_yg_harus_dibayar_sppt || 0;
+        const bName = getBukuName(nominal);
+        bukuMap[bName].spptTotal++;
+        bukuMap[bName].nominalTotal += nominal;
+
         if (isLunas) {
           totalLunas++;
           totalNominalLunas += nominal;
+          bukuMap[bName].spptLunas++;
+          bukuMap[bName].nominalLunas += nominal;
         } else {
           totalBelum++;
           totalNominalBelum += nominal;
+          bukuMap[bName].spptBelum++;
+          bukuMap[bName].nominalBelum += nominal;
         }
         const k = r.nm_kecamatan;
         if (!kecMap[k]) kecMap[k] = { lunas: 0, belum: 0 };
@@ -183,12 +229,14 @@ export async function GET(request: Request) {
         const t = stats.lunas + stats.belum;
         return { name, lunas: stats.lunas, belumLunas: stats.belum, total: t, percentageLunas: t > 0 ? (stats.lunas / t) * 100 : 0 };
       }).sort((a, b) => a.name.localeCompare(b.name));
+      const bukuStats = Object.values(bukuMap);
 
       return NextResponse.json({
         type: 'PENAGIHAN_PERUSAHAAN',
         userKecamatan: 'Semua Kecamatan (Perusahaan > 2 Juta)',
         summary: { total, totalLunas, totalBelum, percentage, totalNominal, totalNominalLunas, totalNominalBelum, percentageNominal },
         stats: kecamatanStats,
+        bukuStats,
         ranking: { 
           rankLevel1: null, 
           totalLevel1: null, 

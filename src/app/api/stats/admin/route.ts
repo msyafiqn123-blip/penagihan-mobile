@@ -124,11 +124,49 @@ export async function GET(request: Request) {
       }
     });
 
+    // Ulasan Lunas per Buku
+    const getBukuStats = async (min: number | null, max: number | null, name: string) => {
+      const where: any = {};
+      if (min !== null && max !== null) {
+        where.pbb_yg_harus_dibayar_sppt = { gt: min, lte: max };
+      } else if (min !== null) {
+        where.pbb_yg_harus_dibayar_sppt = { gt: min };
+      } else if (max !== null) {
+        where.pbb_yg_harus_dibayar_sppt = { lte: max };
+      }
+
+      const [totalCount, lunasCount, totalSum, lunasSum] = await Promise.all([
+        prisma.taxRecord.count({ where }),
+        prisma.taxRecord.count({ where: { ...where, status_pembayaran_sppt: 'LUNAS' } }),
+        prisma.taxRecord.aggregate({ where, _sum: { pbb_yg_harus_dibayar_sppt: true } }),
+        prisma.taxRecord.aggregate({ where: { ...where, status_pembayaran_sppt: 'LUNAS' }, _sum: { pbb_yg_harus_dibayar_sppt: true } })
+      ]);
+
+      return {
+        name,
+        spptTotal: totalCount,
+        spptLunas: lunasCount,
+        spptBelum: totalCount - lunasCount,
+        nominalTotal: totalSum._sum.pbb_yg_harus_dibayar_sppt || 0,
+        nominalLunas: lunasSum._sum.pbb_yg_harus_dibayar_sppt || 0,
+        nominalBelum: (totalSum._sum.pbb_yg_harus_dibayar_sppt || 0) - (lunasSum._sum.pbb_yg_harus_dibayar_sppt || 0)
+      };
+    };
+
+    const bukuStats = await Promise.all([
+      getBukuStats(null, 100000, 'Buku 1 (< 100 Ribu)'),
+      getBukuStats(100000, 500000, 'Buku 2 (100 Ribu - 500 Ribu)'),
+      getBukuStats(500000, 2000000, 'Buku 3 (500 Ribu - 2 Juta)'),
+      getBukuStats(2000000, 5000000, 'Buku 4 (2 Juta - 5 Juta)'),
+      getBukuStats(5000000, null, 'Buku 5 (> 5 Juta)')
+    ]);
+
     return NextResponse.json({
       overall: { totalCount, totalLunas, totalBelum, totalNominal, totalNominalLunas, totalNominalBelum },
       kecamatanStats,
       kelurahanStats,
-      topUnpaid
+      topUnpaid,
+      bukuStats
     });
 
   } catch (error) {

@@ -69,7 +69,7 @@ export default function AdminDashboard() {
 
   if (!data) return null;
 
-  const { overall, kecamatanStats, kelurahanStats, topUnpaid } = data;
+  const { overall, kecamatanStats, kelurahanStats, topUnpaid, bukuStats } = data;
   const pieData = [
     { name: 'Lunas', value: overall.totalLunas, color: '#10b981' },
     { name: 'Belum Lunas', value: overall.totalBelum, color: '#ef4444' }
@@ -128,7 +128,7 @@ export default function AdminDashboard() {
         <h3 className="mb-4 text-slate-700"><DollarSign size={20} className="mr-2 text-indigo-600 inline"/> Pencapaian Berdasarkan Ketetapan PBB</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-4 bg-slate-50 border border-slate-100 rounded-xl">
-            <p className="text-xs text-slate-500">Total Nominal PBB</p>
+            <p className="text-xs text-slate-500">Total Nominal Ketetapan PBB</p>
             <p className="text-lg md:text-xl font-bold text-slate-800 break-words">{formatRupiah(overall.totalNominal)}</p>
           </div>
           <div className="p-4 bg-indigo-50 border border-indigo-100 rounded-xl">
@@ -224,6 +224,44 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3 text-right text-slate-600">{formatRupiah(k.nominalTotal)}</td>
                     <td className="px-4 py-3 text-right text-emerald-600 font-medium">{formatRupiah(k.nominalLunas)}</td>
                     <td className="px-4 py-3 text-right text-rose-600 font-medium">{formatRupiah(k.nominalBelum)}</td>
+                    <td className="px-4 py-3 text-center">
+                      <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${percent >= 70 ? 'bg-emerald-100 text-emerald-700' : percent >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}`}>
+                        {percent.toFixed(2)}%
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Ulasan Lunas per Buku */}
+      <div className="bg-card p-5 rounded-2xl shadow-xl overflow-hidden mt-6">
+        <h3 className="mb-4 text-slate-700 font-bold">Ulasan Lunas per Buku</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-200">
+              <tr>
+                <th className="px-4 py-3 font-semibold">Buku (Range Nominal)</th>
+                <th className="px-4 py-3 font-semibold text-right">SPPT Lunas</th>
+                <th className="px-4 py-3 font-semibold text-right">SPPT Belum Lunas</th>
+                <th className="px-4 py-3 font-semibold text-right">Nominal Lunas</th>
+                <th className="px-4 py-3 font-semibold text-right">Nominal Belum Lunas</th>
+                <th className="px-4 py-3 font-semibold text-center">Pencapaian (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bukuStats && bukuStats.map((buku: any, idx: number) => {
+                const percent = buku.nominalTotal > 0 ? (buku.nominalLunas / buku.nominalTotal) * 100 : 0;
+                return (
+                  <tr key={idx} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors">
+                    <td className="px-4 py-3 font-medium text-slate-700">{buku.name}</td>
+                    <td className="px-4 py-3 text-right text-emerald-600 font-medium">{buku.spptLunas.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-right text-rose-600 font-medium">{buku.spptBelum.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-right text-emerald-600 font-medium">{formatRupiah(buku.nominalLunas)}</td>
+                    <td className="px-4 py-3 text-right text-rose-600 font-medium">{formatRupiah(buku.nominalBelum)}</td>
                     <td className="px-4 py-3 text-center">
                       <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-bold ${percent >= 70 ? 'bg-emerald-100 text-emerald-700' : percent >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}`}>
                         {percent.toFixed(2)}%
